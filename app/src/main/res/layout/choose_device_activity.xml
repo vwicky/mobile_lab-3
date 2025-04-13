@@ -8,16 +8,17 @@
 
     <!-- Title -->
     <ImageButton
-        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/backButton1"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@null"
+        android:contentDescription="Return back"
         android:padding="8dp"
         android:src="@android:drawable/ic_media_previous"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleText"
@@ -37,11 +38,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:contentDescription="Items displayced here"
+        app:layout_constraintBottom_toTopOf="@id/connectButton"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintBottom_toTopOf="@id/connectButton"/>
+        tools:layout_editor_absoluteX="16dp" />
 
     <!-- Connect Button -->
     <Button
