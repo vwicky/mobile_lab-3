@@ -12,40 +12,29 @@ import androidx.appcompat.app.ActionBar.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-val mockDevices = listOf(
-    DeviceInfo("Lorem Ipsum 1", "lorem 11 ipsum dorem", "Version 01.0.01V"),
-    DeviceInfo("Lorem Ipsum 2", "lorem 22 ipsum dorem", "Version 02.0.01V"),
-    DeviceInfo("Lorem Ipsum 3", "lorem 33 ipsum dorem", "Version 03.0.01V"),
-    DeviceInfo("Lorem Ipsum 4", "lorem 44 ipsum dorem", "Version 04.0.01V"),
-    DeviceInfo("Lorem Ipsum 5", "lorem 55 ipsum dorem", "Version 05.0.01V"),
-);
+import androidx.room.Room
+import com.example.lab_3.databaseManagement.DatabaseTester
+import com.example.lab_3.databaseManagement.GeneralDatabase
+import com.example.lab_3.databaseManagement.Lab4
+import com.example.lab_3.mvpLR6.Lab6
+import com.example.lab_3.mvpLR6.data.IDataSource
+import com.example.lab_3.mvpLR6.di.DiHelper
+import com.example.lab_3.mvpLR6.ui.MainContract
+import com.example.lab_3.restfulManagement.Devices
+import com.example.lab_3.restfulManagement.Device
+import com.example.lab_3.restfulManagement.Lab5
+import com.example.lab_3.restfulManagement.TestAPIService
 
 class ChooseDeviceActivity : AppCompatActivity() {
     private var selectedDeviceName: String? = null
     private var selectedDeviceDescription: String? = null
     private var selectedDeviceVersion: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.choose_device_activity)
+    fun displayDevices(recyclerView: RecyclerView, devices: List<Device>) {
+        recyclerView.adapter = getLab5Adapter(devices)
+    }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recycle_view)
-        val customAdapter = DeviceAdapter(this, mockDevices) { selectedDevice ->
-            // Store the selected device info
-            selectedDeviceName = selectedDevice.name
-            selectedDeviceDescription = selectedDevice.description
-            selectedDeviceVersion = selectedDevice.version
-
-            // Update UI to show selected device
-            println("Selected: ${selectedDevice.name}")
-            //findViewById<TextView>(R.id.selectedDeviceText).text = "Selected: ${selectedDevice.name}"
-        }
-
-        recyclerView.adapter = customAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this,
-            LinearLayoutManager.VERTICAL, false)
-
+    private fun addButtons() {
         val buttonBack = findViewById<ImageButton>(R.id.backButton1)
         buttonBack?.setOnClickListener {
             Toast.makeText(this, "Moving back", Toast.LENGTH_SHORT).show()
@@ -54,7 +43,6 @@ class ChooseDeviceActivity : AppCompatActivity() {
             a.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(a)
         }
-
         val buttonConnect = findViewById<Button>(R.id.connectButton)
         buttonConnect.setOnClickListener {
             val intent = Intent(this, ConnectingActivity::class.java).apply {
@@ -63,6 +51,55 @@ class ChooseDeviceActivity : AppCompatActivity() {
                 putExtra("device_version", selectedDeviceVersion)
             }
             startActivity(intent)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.choose_device_activity)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recycle_view)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        fun displayDevicesHere(devices: List<Device>) {
+            displayDevices(recyclerView, devices)
+        }
+
+        val lab4: Lab4 = Lab4(applicationContext, recyclerView)
+        recyclerView.adapter = getLab4Adapter(lab4.getDeviceInfosSafe())
+        lab4.test()
+
+        val lab5: Lab5 = Lab5(applicationContext, recyclerView, ::displayDevicesHere)
+        lab5.test()
+
+        val lab6: Lab6 = Lab6(applicationContext, recyclerView, ::displayDevicesHere)
+        lab6.test()
+        lab6.testRepository()
+
+        // small adjustments
+        this.addButtons()
+    }
+
+    private fun getLab4Adapter(devices: List<DeviceInfo>) : DeviceAdapter {
+        return DeviceAdapter(applicationContext, devices) { selectedDevice ->
+            // Store the selected device info
+            selectedDeviceName = selectedDevice.name
+            selectedDeviceDescription = selectedDevice.description
+            selectedDeviceVersion = selectedDevice.version
+
+            // Update UI to show selected device
+            println("Selected: ${selectedDevice.name}")
+        }
+    }
+    private fun getLab5Adapter(devices: List<Device>) : DeviceAdapter {
+        val deviceInfos = devices.map {
+            DeviceInfo(it.name, it.description, it.version)
+        }
+        return DeviceAdapter(this@ChooseDeviceActivity, deviceInfos) { selectedDevice ->
+            selectedDeviceName = selectedDevice.name
+            selectedDeviceDescription = selectedDevice.description
+            selectedDeviceVersion = selectedDevice.version
+            println("Selected: ${selectedDevice.name}")
         }
     }
 }

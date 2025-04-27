@@ -39,13 +39,21 @@ android {
 }
 
 dependencies {
+    // lab-4
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.media3.common.ktx)
     val room_version = "2.5.2"
 
     implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version") // ✅ No annotationProcessor in Kotlin
+    kapt("androidx.room:room-compiler:$room_version")
 
+    // lab-5
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation("com.google.code.gson:gson:2.8.6")
+
+    // default
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

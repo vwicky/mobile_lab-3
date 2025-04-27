@@ -2,6 +2,7 @@ package com.example.lab_3
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -9,10 +10,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.example.lab_3.databaseManagement.DatabaseTester
 import com.example.lab_3.databaseManagement.GeneralDatabase
+import com.example.lab_3.mvpLR6.ui.MainActivity
+import com.example.lab_3.restfulManagement.Device
+import com.example.lab_3.restfulManagement.Devices
+import com.example.lab_3.restfulManagement.TestAPI
+import com.example.lab_3.restfulManagement.TestAPIService
 
 class MainActivity : AppCompatActivity() {
     lateinit var db: GeneralDatabase
     lateinit var dbTester: DatabaseTester
+
+    var mainActivity: MainActivity = MainActivity()
 
     private fun createDB() {
         db = Room.databaseBuilder(
@@ -28,8 +36,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createDB()
-        testDB()
+        // LR 4-5
+        //loadData()
+        //createDB()
+        //testDB()
+
+        mainActivity.presenter.loadData()
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
